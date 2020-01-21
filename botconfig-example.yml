@@ -1,0 +1,7 @@
+channel: "" #Your TwitchChannel
+botChannel: "" #Your Bot Channel
+botOAuthToken: "" #Your Bot OAuth Token
+isLiveCheckInterval: 300000 #Delay between chekc if channel is live
+
+discordToken: "" #Discord Bot Token
+discordChannelID: "" #Channel ID in which the Messages should appear

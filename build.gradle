@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'net.dv8tion:JDA:4.1.0_100'
+    compile group: 'com.github.gikkman', name: 'Java-Twirk', version: '0.5'
+    compile group: 'org.json', name: 'json', version: '20190722'
+    compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
+
+}
+
+application {
+    mainClassName = 'de.jerome.discordbot.DiscordBotMain'
+}
+
+jar {
+  manifest { 
+    attributes "Main-Class": "$mainClassName"
+  }
+}

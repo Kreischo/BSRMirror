@@ -1,0 +1,10 @@
+botconfig.yml
+gradlew
+gradlew.bat
+
+*.class
+
+/gradle
+/build
+/.idea
+/.gradle
