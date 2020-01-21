@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 public class DiscordBotMain {
 
     public static final Logger LOGGER = Logger.getLogger("MainLogger");
+    public final String configFileName = "botconfig.yml";
 
     private Config config;
     private JDA jda;
@@ -29,17 +30,17 @@ public class DiscordBotMain {
     private TwitchListener tl;
 
 
-    public static void main(String[] args) throws LoginException, InterruptedException, IllegalAccessException {
+    public static void main(String[] args) throws LoginException, InterruptedException {
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
         new DiscordBotMain();
     }
 
-    private DiscordBotMain() throws InterruptedException, LoginException, IllegalAccessException {
+    private DiscordBotMain() throws InterruptedException, LoginException {
         instance = this;
         try {
             loadConfig();
         } catch (FileNotFoundException ex) {
-            log("Could not find the file botconfig.yml. Does it exist?\n\n");
+            log("Could not find the file " + configFileName + ". Does it exist?\n\n");
             ex.printStackTrace();
             System.exit(-1);
         } catch (YamlException e) {
@@ -59,10 +60,17 @@ public class DiscordBotMain {
             log("Error on initialisation. Is Discord or Twitch down?");
             ex.printStackTrace();
         }
+
+        try {
+            Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        } catch (Exception ex){
+            log("Couldn't add a shutdown-hook!\n\n");
+            ex.printStackTrace();
+        }
     }
 
     private void loadConfig() throws FileNotFoundException, YamlException {
-        config = new YamlReader(new FileReader("botconfig.yml")).read(Config.class);
+        config = new YamlReader(new FileReader(configFileName)).read(Config.class);
     }
 
     private void initTwitch() throws IOException, InterruptedException {
@@ -79,6 +87,7 @@ public class DiscordBotMain {
     }
 
     public void shutdown() {
+        log("Shutting down...");
         jda.shutdownNow();
         twirk.disconnect();
     }
