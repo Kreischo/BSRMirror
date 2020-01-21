@@ -13,6 +13,8 @@ import javax.security.auth.login.LoginException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 public class DiscordBotMain {
@@ -27,16 +29,16 @@ public class DiscordBotMain {
     private TwitchListener tl;
 
 
-    public static void main(String[] args) throws LoginException, InterruptedException {
+    public static void main(String[] args) throws LoginException, InterruptedException, IllegalAccessException {
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
         new DiscordBotMain();
     }
 
-    private DiscordBotMain() throws InterruptedException, LoginException {
+    private DiscordBotMain() throws InterruptedException, LoginException, IllegalAccessException {
         instance = this;
         try {
             loadConfig();
-        } catch (FileNotFoundException ex){
+        } catch (FileNotFoundException ex) {
             log("Could not find the file botconfig.yml. Does it exist?\n\n");
             ex.printStackTrace();
             System.exit(-1);
@@ -45,6 +47,8 @@ public class DiscordBotMain {
             e.printStackTrace();
             System.exit(-1);
         }
+
+        //TODO: Check if config fields are not null
 
         try {
             initTwitch();
@@ -58,13 +62,12 @@ public class DiscordBotMain {
     }
 
     private void loadConfig() throws FileNotFoundException, YamlException {
-        config= new YamlReader(new FileReader("botconfig.yml")).read(Config.class);
-        System.out.println(config);
+        config = new YamlReader(new FileReader("botconfig.yml")).read(Config.class);
     }
 
     private void initTwitch() throws IOException, InterruptedException {
         twirk = new TwirkBuilder("#" + config.channel, config.botChannel, config.botOAuthToken).build();
-        tl =  new TwitchListener();
+        tl = new TwitchListener();
         twirk.addIrcListener(tl);
         twirk.connect();
     }

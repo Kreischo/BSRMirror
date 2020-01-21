@@ -26,7 +26,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'de.jerome.discordbot.DiscordBotMain'
+    mainClassName = 'de.syskoh.discordbot.DiscordBotMain'
 }
 
 jar {
