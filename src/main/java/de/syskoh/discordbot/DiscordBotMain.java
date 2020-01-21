@@ -1,7 +1,9 @@
 package de.syskoh.discordbot;
 
+import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
+import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.gikk.twirk.Twirk;
 import com.gikk.twirk.TwirkBuilder;
 import de.syskoh.discordbot.listener.DiscordEventListener;
@@ -10,18 +12,14 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.io.*;
 import java.util.logging.Logger;
 
 public class DiscordBotMain {
 
     public static final Logger LOGGER = Logger.getLogger("MainLogger");
     public final String configFileName = "botconfig.yml";
-
+    public final File configFile = new File(configFileName);
     private Config config;
     private JDA jda;
     private Twirk twirk;
@@ -37,7 +35,9 @@ public class DiscordBotMain {
 
     private DiscordBotMain() throws InterruptedException, LoginException {
         instance = this;
+
         try {
+            generateBotConfig();
             loadConfig();
         } catch (FileNotFoundException ex) {
             log("Could not find the file " + configFileName + ". Does it exist?\n\n");
@@ -47,6 +47,9 @@ public class DiscordBotMain {
             log("The config file is malformed. Please make sure there are no spaces at the beginning of each line.\n\n");
             e.printStackTrace();
             System.exit(-1);
+        } catch (IOException e) {
+            log("Couldn't generate default config. Do you have write permissions?\n\n");
+            e.printStackTrace();
         }
 
         //TODO: Check if config fields are not null
@@ -67,6 +70,27 @@ public class DiscordBotMain {
             log("Couldn't add a shutdown-hook!\n\n");
             ex.printStackTrace();
         }
+    }
+
+    private void generateBotConfig() throws IOException {
+        if(configFile.exists())
+            return;
+
+        log("Generating default config");
+
+        PrintWriter printWriter = new PrintWriter(configFile);
+        InputStreamReader isr = new InputStreamReader(this.getClass().getResourceAsStream("/defaultConfig.yml"));
+
+        int content;
+
+        while((content = isr.read()) != -1){
+            printWriter.print((char)content);
+        }
+        isr.close();
+        printWriter.close();
+
+        log("Done generating. Exiting, please setup the config!");
+        System.exit(0);
     }
 
     private void loadConfig() throws FileNotFoundException, YamlException {

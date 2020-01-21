@@ -6,5 +6,5 @@ public class Config {
     public String botOAuthToken;
     public String discordToken;
     public String discordChannelID;
-    public Integer isLiveCheckInterval = 300000;
+    public Integer isLiveCheckInterval;
 }

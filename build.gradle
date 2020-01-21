@@ -30,6 +30,10 @@ application {
 }
 
 jar {
+    from('src/main/java'){
+        include 'defaultConfig.yml'
+    }
+
   manifest { 
     attributes "Main-Class": "$mainClassName"
   }
