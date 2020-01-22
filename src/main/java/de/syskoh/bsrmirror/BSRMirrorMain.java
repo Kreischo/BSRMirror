@@ -1,13 +1,11 @@
-package de.syskoh.discordbot;
+package de.syskoh.bsrmirror;
 
-import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
-import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.gikk.twirk.Twirk;
 import com.gikk.twirk.TwirkBuilder;
-import de.syskoh.discordbot.listener.DiscordEventListener;
-import de.syskoh.discordbot.listener.TwitchListener;
+import de.syskoh.bsrmirror.listener.DiscordEventListener;
+import de.syskoh.bsrmirror.listener.TwitchListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -15,7 +13,7 @@ import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.util.logging.Logger;
 
-public class DiscordBotMain {
+public class BSRMirrorMain {
 
     public static final Logger LOGGER = Logger.getLogger("MainLogger");
     public final String configFileName = "botconfig.yml";
@@ -23,17 +21,17 @@ public class DiscordBotMain {
     private Config config;
     private JDA jda;
     private Twirk twirk;
-    private static DiscordBotMain instance;
+    private static BSRMirrorMain instance;
     private CheckIsLiveThread checkIsLiveThread;
     private TwitchListener tl;
 
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
-        new DiscordBotMain();
+        new BSRMirrorMain();
     }
 
-    private DiscordBotMain() throws InterruptedException, LoginException {
+    private BSRMirrorMain() throws InterruptedException, LoginException {
         instance = this;
 
         try {
@@ -112,6 +110,7 @@ public class DiscordBotMain {
 
     public void shutdown() {
         log("Shutting down...");
+        checkIsLiveThread.stopThread();
         jda.shutdownNow();
         twirk.disconnect();
     }
@@ -141,7 +140,7 @@ public class DiscordBotMain {
         return config.channel;
     }
 
-    public static DiscordBotMain getInstance() {
+    public static BSRMirrorMain getInstance() {
         return instance;
     }
 }

@@ -1,4 +1,4 @@
-package de.syskoh.discordbot;
+package de.syskoh.bsrmirror;
 
 public class Config {
     public String channel;
@@ -7,4 +7,5 @@ public class Config {
     public String discordToken;
     public String discordChannelID;
     public Integer isLiveCheckInterval;
+    public String adminRoleName; //TODO: implement Admin Role
 }

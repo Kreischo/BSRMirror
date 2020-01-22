@@ -1,6 +1,5 @@
-package de.syskoh.discordbot.requests;
+package de.syskoh.bsrmirror.requests;
 
-import com.sun.javafx.binding.StringFormatter;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;

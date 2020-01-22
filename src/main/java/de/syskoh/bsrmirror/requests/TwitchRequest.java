@@ -1,4 +1,4 @@
-package de.syskoh.discordbot.requests;
+package de.syskoh.bsrmirror.requests;
 
 import org.json.JSONObject;
 

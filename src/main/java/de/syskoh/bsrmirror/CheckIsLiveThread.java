@@ -1,13 +1,14 @@
-package de.syskoh.discordbot;
+package de.syskoh.bsrmirror;
 
-import de.syskoh.discordbot.listener.TwitchListener;
-import de.syskoh.discordbot.requests.TwitchRequest;
+import de.syskoh.bsrmirror.listener.TwitchListener;
+import de.syskoh.bsrmirror.requests.TwitchRequest;
 
 public class CheckIsLiveThread extends Thread {
 
     boolean running;
     int interval;
     TwitchListener twitchListener;
+    boolean lastState = false;
 
     public CheckIsLiveThread(int interval, TwitchListener twitchListener) {
         this.running = true;
@@ -23,9 +24,9 @@ public class CheckIsLiveThread extends Thread {
     public void run() {
         while (running) {
             try {
-                TwitchRequest twitchRequest = new TwitchRequest(DiscordBotMain.getInstance().getChannel());
+                TwitchRequest twitchRequest = new TwitchRequest(BSRMirrorMain.getInstance().getChannel());
                 twitchListener.setTwitchClientQuery(twitchRequest);
-                DiscordBotMain.log(DiscordBotMain.getInstance().getChannel() + " is " + (twitchRequest.isLive() ? "" : "not ") + "live!");
+                //DiscordBotMain.log(DiscordBotMain.getInstance().getChannel() + " is " + (twitchRequest.isLive() ? "" : "not ") + "live!");
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
                 e.printStackTrace();

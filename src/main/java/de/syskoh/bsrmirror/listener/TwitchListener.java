@@ -1,25 +1,27 @@
-package de.syskoh.discordbot.listener;
+package de.syskoh.bsrmirror.listener;
 
 import com.gikk.twirk.events.TwirkListener;
 import com.gikk.twirk.types.twitchMessage.TwitchMessage;
 import com.gikk.twirk.types.users.TwitchUser;
-import de.syskoh.discordbot.DiscordBotMain;
-import de.syskoh.discordbot.requests.TwitchRequest;
-import de.syskoh.discordbot.requests.BeatSaverAPIRequest;
+import de.syskoh.bsrmirror.BSRMirrorMain;
+import de.syskoh.bsrmirror.requests.TwitchRequest;
+import de.syskoh.bsrmirror.requests.BeatSaverAPIRequest;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class TwitchListener implements TwirkListener {
 
     private TwitchRequest twitchRequest;
-    private String channel = DiscordBotMain.getInstance().getConfig().discordChannelID;
+    private String channel = BSRMirrorMain.getInstance().getConfig().discordChannelID;
+    private LinkedList<String> requestedKeys = new LinkedList<>();
 
     @Override
     public void onPrivMsg(TwitchUser sender, TwitchMessage message) {
-        DiscordBotMain.log(sender.getDisplayName()+ ": " + message.getContent());
+        BSRMirrorMain.log(sender.getDisplayName()+ ": " + message.getContent());
 
         if(twitchRequest == null || !twitchRequest.isLive())
             return;
@@ -31,6 +33,10 @@ public class TwitchListener implements TwirkListener {
         if(key.length() > 5)
             return;
 
+        if(requestedKeys.contains(key))
+            return;
+
+        requestedKeys.add(key);
 
         BeatSaverAPIRequest bsar = new BeatSaverAPIRequest(key);
 
@@ -54,19 +60,27 @@ public class TwitchListener implements TwirkListener {
 
     @Override
     public void onConnect() {
-        DiscordBotMain.log("Twitch is connected");
+        BSRMirrorMain.log("Twitch is connected");
     }
 
     private void discordMessage(MessageEmbed msg){
-        Objects.requireNonNull(DiscordBotMain.getInstance().getJda().getTextChannelById(channel)).sendMessage(msg).queue();
+        Objects.requireNonNull(BSRMirrorMain.getInstance().getJda().getTextChannelById(channel)).sendMessage(msg).queue();
     }
 
     private void discordMessage(String msg){
-        Objects.requireNonNull(DiscordBotMain.getInstance().getJda().getTextChannelById(channel)).sendMessage(msg).queue();
+        Objects.requireNonNull(BSRMirrorMain.getInstance().getJda().getTextChannelById(channel)).sendMessage(msg).queue();
     }
 
     public void setTwitchClientQuery(TwitchRequest tcq){
-        this.twitchRequest = tcq;
+        if(this.twitchRequest != null && this.twitchRequest.isLive() && !tcq.isLive()){
+            BSRMirrorMain.log(BSRMirrorMain.getInstance().getConfig().channel + " went offline! Deleted request keys.");
+            clearKeys();
+        }
+            this.twitchRequest = tcq;
+    }
+
+    public void clearKeys(){
+        this.requestedKeys.clear();
     }
 
 }

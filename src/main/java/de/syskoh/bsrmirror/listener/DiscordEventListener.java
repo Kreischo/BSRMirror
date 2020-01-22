@@ -1,6 +1,8 @@
-package de.syskoh.discordbot.listener;
+package de.syskoh.bsrmirror.listener;
 
+import de.syskoh.bsrmirror.BSRMirrorMain;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 
 import javax.annotation.Nonnull;
