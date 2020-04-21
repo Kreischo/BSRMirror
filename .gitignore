@@ -8,3 +8,4 @@ gradlew.bat
 /build
 /.idea
 /.gradle
+/logs

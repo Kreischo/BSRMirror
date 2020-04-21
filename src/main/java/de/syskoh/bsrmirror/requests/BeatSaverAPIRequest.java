@@ -10,16 +10,14 @@ import java.net.URL;
 
 public class BeatSaverAPIRequest {
 
-    private URL url;
-    private HttpsURLConnection con;
     private JSONObject job;
     private String key;
 
     public BeatSaverAPIRequest(String key) {
         this.key = key;
         try {
-            url = new URL("https://beatsaver.com/api/maps/detail/" + key);
-            con = (HttpsURLConnection) url.openConnection();
+            URL url = new URL("https://beatsaver.com/api/maps/detail/" + key);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
             con.addRequestProperty("User-Agent", "FireFox");
 
             con.connect();
